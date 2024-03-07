@@ -11,62 +11,42 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as DashboardImport } from './routes/_dashboard'
-import { Route as AuthImport } from './routes/_auth'
-import { Route as DashboardIndexImport } from './routes/_dashboard/index'
-import { Route as AuthSignupImport } from './routes/_auth/signup'
-import { Route as AuthLoginImport } from './routes/_auth/login'
+import { Route as PostsImport } from './routes/posts'
+import { Route as IndexImport } from './routes/index'
+import { Route as PostsIndexImport } from './routes/posts.index'
 
 // Create/Update Routes
 
-const DashboardRoute = DashboardImport.update({
-  id: '/_dashboard',
+const PostsRoute = PostsImport.update({
+  path: '/posts',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthRoute = AuthImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const DashboardIndexRoute = DashboardIndexImport.update({
+const IndexRoute = IndexImport.update({
   path: '/',
-  getParentRoute: () => DashboardRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
-const AuthSignupRoute = AuthSignupImport.update({
-  path: '/signup',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthLoginRoute = AuthLoginImport.update({
-  path: '/login',
-  getParentRoute: () => AuthRoute,
+const PostsIndexRoute = PostsIndexImport.update({
+  path: '/',
+  getParentRoute: () => PostsRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_auth': {
-      preLoaderRoute: typeof AuthImport
+    '/': {
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/_dashboard': {
-      preLoaderRoute: typeof DashboardImport
+    '/posts': {
+      preLoaderRoute: typeof PostsImport
       parentRoute: typeof rootRoute
     }
-    '/_auth/login': {
-      preLoaderRoute: typeof AuthLoginImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/signup': {
-      preLoaderRoute: typeof AuthSignupImport
-      parentRoute: typeof AuthImport
-    }
-    '/_dashboard/': {
-      preLoaderRoute: typeof DashboardIndexImport
-      parentRoute: typeof DashboardImport
+    '/posts/': {
+      preLoaderRoute: typeof PostsIndexImport
+      parentRoute: typeof PostsImport
     }
   }
 }
@@ -74,8 +54,8 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  AuthRoute.addChildren([AuthLoginRoute, AuthSignupRoute]),
-  DashboardRoute.addChildren([DashboardIndexRoute]),
+  IndexRoute,
+  PostsRoute.addChildren([PostsIndexRoute]),
 ])
 
 /* prettier-ignore-end */
